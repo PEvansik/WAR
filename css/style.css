@@ -1,0 +1,48 @@
+/******************************************
+/* CSS
+/*******************************************/
+
+/* Box Model Hack */
+*{
+  box-sizing: border-box;
+}
+
+/******************************************
+/* LAYOUT
+/*******************************************/
+
+.container {
+  margin: 0 auto;
+  text-align: center;
+  max-width: 80%;
+}
+
+.game {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+}
+.players {
+  max-width: 40%;
+}
+
+img{
+  margin: 0 auto;
+  display: block;
+  max-width: 400px;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+}
+iframe {
+  display: block;
+  margin: 0 auto;
+  width: 400px;
+  height: 400px;
+}
+
+
+/******************************************
+/* ADDITIONAL STYLES
+/*******************************************/
