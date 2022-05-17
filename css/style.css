@@ -36,16 +36,14 @@ img{
   height: 150px;
   object-fit: cover;
   object-position: center;
-  border: 1px solid red;
   padding: 5px 0;
 }
-.wartime {
+.wartime1, .wartime2 {
 display: none;
 }
 .result {
   width: 200px;
   height: 30px;
-  border: 1px solid red;
   display: inline-block;
   border-radius: 5px;
   background-color: blanchedalmond;

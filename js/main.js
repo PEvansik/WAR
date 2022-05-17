@@ -5,6 +5,8 @@
 //the person with the fourth win takes all cards
 //the winner takes all the cards.
 
+
+//preWar rendering
 let play1 = document.querySelector('.play1');
 let play2 = document.querySelector('.play2');
 
@@ -13,7 +15,7 @@ let player2Suite = document.querySelector('.player2suite')
 let player1Value = document.querySelector('.value1')
 let player2Value = document.querySelector('.value2')
 
-//War
+//War rendering
 let play1War = document.querySelector('.final1');
 let play2War = document.querySelector('.final2');
 
@@ -21,6 +23,9 @@ let play1WarSuite = document.querySelector('.player1warsuite')
 let play2WarSuite = document.querySelector('.player2warsuite')
 let player1WarValue = document.querySelector('.value1war')
 let player2WarValue = document.querySelector('.value2war')
+
+let warTime1 = document.querySelector('.wartime1')
+let warTime2 = document.querySelector('.wartime2')
 
 //Buttons
 let playButton = document.querySelector('.play');
@@ -75,6 +80,14 @@ function playCard() {
       //players 1 and 2 values used for evaluating the winner having converted to number
       let player1 = convertToNum(data.cards[0].value);
       let player2 = convertToNum(data.cards[1].value);
+      //war
+
+      player1Value = data.cards[0].value
+      player2Value = data.cards[1].value
+
+      player1Suite = data.cards[0].suite
+      player2Suite = data.cards[1].suite
+
 
       //check how many cards are remaining in the deck
       if(data.remaining >= 2) {
@@ -100,11 +113,28 @@ function playCard() {
                 play2.src = data.cards[1].image
                 play1War.src = data.cards[2].image
                 play2War.src = data.cards[3].image
-  
-                if(player1 > player2) {
+
+                //war
+                let player3 = convertToNum(data.cards[2].value);
+                let player4 = convertToNum(data.cards[3].value);
+
+                player1Suite = data.cards[0].suit
+                player2Suite = data.cards[1].suit
+                player1WarSuite = data.cards[2].suit
+                player2WarSuite = data.cards[3].suit
+
+                player1Value = data.cards[0].value
+                player2Value = data.cards[1].value
+                player1Warvalue = data.cards[2].value
+                player2Warvalue = data.cards[3].value
+                
+                warTime1.style.display = 'block'
+                warTime2.style.display = 'block'
+
+                if(player3 > player4) {
                   gameOutcome.innerText = `Player 1 wins`
                 }
-                else if (player1 < player2) {
+                else if (player3 < player4) {
                   gameOutcome.innerText = `Player 2 wins`
                 }
               })
@@ -118,39 +148,75 @@ function playCard() {
               .then(res => res.json())
               .then(data => {
                 console.log(data)
+                //draw 4 cards from the chain
+                return fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
+
               })
-            
+              .then(response => response.json())
+              .then(data => {
+
+                play1.src = data.cards[0].image
+                play2.src = data.cards[1].image
+                play1War.src = data.cards[2].image
+                play2War.src = data.cards[3].image
+
+                //war
+                let player3 = convertToNum(data.cards[2].value);
+                let player4 = convertToNum(data.cards[3].value);
+
+                player1Suite = data.cards[0].suit
+                player2Suite = data.cards[1].suit
+                player1WarSuite = data.cards[2].suit
+                player2WarSuite = data.cards[3].suit
+
+                player1Value = data.cards[0].value
+                player2Value = data.cards[1].value
+                player1Warvalue = data.cards[2].value
+                player2Warvalue = data.cards[3].value
+
+                warTime1.style.display = 'block'
+                warTime2.style.display = 'block'
+  
+                if(player3 > player4) {
+                  gameOutcome.innerText = `Player 1 wins`
+                }
+                else if (player3 < player4) {
+                  gameOutcome.innerText = `Player 2 wins`
+                }
+              })
+              .catch(err => console.log(err))
           }
+          //disable play button to enable player restart game
+          playButton.style.display = 'none'
+        }
 
           //if the number of cards left is greater than 4 remaing parameter should be true
           //else the remaining parameter should be false
 
-
-
-
-
-            //play the 4th card from this pull the highest is the final winner
-            //(be weary of something about the number of cards remaining)
-            //disable play button
-            //store winner in local storage
-            //display another button that allows us to restart game
-            //and clear the local storage when it is pressed and it also disappears
-            //when it is clicked to brink back the play button
-            //hide deal 2 button and display deal 4 button
-            //if the cards finish on the round without war, restarts 2shuffles
+          //play the 4th card and from this pull the highest is the final winner
+          //(be weary of something about the number of cards remaining)
+          //disable play button
+          //store winner in local storage
+          //display another button that allows us to restart game
+          //and clear the local storage when it is pressed and it also disappears
+          //when it is clicked to brink back the play button
+          //hide deal 2 button and display deal 4 button
+          //if the cards finish on the round without war, restarts 2shuffles
   
-            
-        }
-  
-        player1Suite.textContent = data.cards[0].suit
-        player1Value.textContent = player1
-        player2Suite.textContent = data.cards[1].suit
-        player2Value.textContent = player2
+          //player1Suite.textContent = data.cards[0].suit
+          //player1Value.textContent = player1
+          //player2Suite.textContent = data.cards[1].suit
+          //player2Value.textContent = player2
+          //War
+          //play1WarSuite.textContent = data.cards[3].suit
+          //player1WarValue.textContent = player3
+          //play2WarSuite.textContent = data.cards[4].suit
+          //player2WarValue.textContent = player4
       }
-      else if (data.remaining < 2) {
-        playButton.style.display = 'none'
-        return
-      }
+      //if the deck is exhausted
+
+      //else if (data.remaining < 2) {}
+
 
     })
 
