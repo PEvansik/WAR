@@ -1,7 +1,6 @@
 //build a card game called war
 //you and the oponent draws cards 
 //the person with the higher card wins and takes both cards after each draw
-//
 //same card we declare war and we put up 3 cards and "flip a fourth one"
 //the person with the fourth win takes all cards
 //the winner takes all the cards.
@@ -12,57 +11,106 @@ let player1Suite = document.querySelector('.player1suite');
 let player2Suite = document.querySelector('.player2suite')
 let player1Value = document.querySelector('.value1')
 let player2Value = document.querySelector('.value2')
-let playButton = document.querySelector('button');
+let playButton = document.querySelector('.play');
+let restartButton = document.querySelector('.restart')
+let gameOutcome = document.querySelector('.result')
 
+
+//get values on pageLoad
+//if (play1 || play2 || player1Suite || player2Suite || player1Value || player2Value) {
+//  card = JSON.parse(localStorage.getItem('card'))
+//  play1 = card.image1;
+//  play2 = card.image2;
+//  player1Suite = card.suite1;
+//  player2Suite = card.suite2; 
+//  player1Value = card.value1;
+//  player2Value = card.value2;
+//}
 
 
 let deckId = '';
-
+//shuffle cards to start the game
 fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
   .then(res => res.json())
   .then(data => {
     console.log(data)
     deckId = data.deck_id
+    console.log(deckId)
   })
   .catch(err => console.log(`error ${err}`))
 
 
-  playButton.addEventListener('click', playCard)
+//when the play button is clicked, call playCard function
+playButton.addEventListener('click', playCard)
+
+//restartButton.addEventListener('click', () => {
+//  playButton.style.display = 'inline-block'
+//})
+
 
 
 function playCard() {
+  //draw 2 cards
   fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`)
     .then(res => res.json())
     .then(data => {
       console.log(data)
-
+      //players 1 & 2 images      
       play1.src = data.cards[0].image
       play2.src = data.cards[1].image
 
+      //players 1 and 2 values used for evaluating the winner having converted to number
       let player1 = convertToNum(data.cards[0].value);
       let player2 = convertToNum(data.cards[1].value);
 
+      //check how many cards are remaining in the deck
       if(data.remaining >= 2) {
 
         if(player1 > player2) {
-          document.querySelector('.result').innerText = `Player 1 wins`
+          gameOutcome.innerText = `Player 1 wins`
         }
         else if (player1 < player2) {
-          document.querySelector('.result').innerText = `Player 2 wins`
+          gameOutcome.innerText = `Player 2 wins`
         }
+        //************===WAR is reached===**********
         else if (player1 === player2) {
           document.querySelector('.result').innerText = `WAR`
-          fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
-            .then(res => res.json())
-            .then(data => {
-              console.log(data)
-              play1.src = data.cards[0].image
-              play2.src = data.cards[1].image
 
+          //if cards left is greater than equal to 4 continue with deck and draw 4
+          if(data.remaining >= 4) {
 
-              document.querySelector('.result').innerText = `Player with highest bid wins`
+            fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
+              .then(res => res.json())
+              .then(data => {
+                console.log(data)
+                play1.src = data.cards[0].image
+                play2.src = data.cards[1].image
   
-            })
+                if(player1 > player2) {
+                  gameOutcome.innerText = `Player 1 wins`
+                }
+                else if (player1 < player2) {
+                  gameOutcome.innerText = `Player 2 wins`
+                }
+              })
+              .catch(err => console.log(err))
+          }
+
+          //if cards left is less than 4 reshuffle deck and draw 4
+          else {
+            //we ahve to reshuffle an not throw away the existing deck
+            fetch(`https://deckofcardsapi.com/api/deck/${deckId}/shuffle/?remaining=true`)
+              .then(res => res.)
+            
+          }
+
+          //if the number of cards left is greater than 4 remaing parameter should be true
+          //else the remaining parameter should be false
+
+
+
+
+
             //play the 4th card from this pull the highest is the final winner
             //(be weary of something about the number of cards remaining)
             //disable play button
@@ -73,7 +121,7 @@ function playCard() {
             //hide deal 2 button and display deal 4 button
             //if the cards finish on the round without war, restarts 2shuffles
   
-            .catch(err => console.log(err))
+            
         }
   
         player1Suite.textContent = data.cards[0].suit
@@ -83,13 +131,24 @@ function playCard() {
       }
       else if (data.remaining < 2) {
         playButton.style.display = 'none'
+        return
       }
-
-
 
     })
 
     .catch(err => console.log(`error is ${err}`))
+
+//Save current rount details in an object for local storage
+
+//let card = {
+//  image1 : play1.src,
+//  image2 : play2.src,
+//  suite1 : player1Suite.textContent,
+//  suite2 : player2Suite.textContent,
+//  value1 : player1Value.textContent,
+//  value2 : player2Value.textContent
+//}
+//localStorage.setItem('card', JSON.stringify(card))
 }
 
 
