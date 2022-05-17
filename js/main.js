@@ -7,12 +7,25 @@
 
 let play1 = document.querySelector('.play1');
 let play2 = document.querySelector('.play2');
+
 let player1Suite = document.querySelector('.player1suite');
 let player2Suite = document.querySelector('.player2suite')
 let player1Value = document.querySelector('.value1')
 let player2Value = document.querySelector('.value2')
+
+//War
+let play1War = document.querySelector('.final1');
+let play2War = document.querySelector('.final2');
+
+let play1WarSuite = document.querySelector('.player1warsuite')
+let play2WarSuite = document.querySelector('.player2warsuite')
+let player1WarValue = document.querySelector('.value1war')
+let player2WarValue = document.querySelector('.value2war')
+
+//Buttons
 let playButton = document.querySelector('.play');
 let restartButton = document.querySelector('.restart')
+//outcome
 let gameOutcome = document.querySelector('.result')
 
 
@@ -85,6 +98,8 @@ function playCard() {
                 console.log(data)
                 play1.src = data.cards[0].image
                 play2.src = data.cards[1].image
+                play1War.src = data.cards[2].image
+                play2War.src = data.cards[3].image
   
                 if(player1 > player2) {
                   gameOutcome.innerText = `Player 1 wins`
@@ -100,7 +115,10 @@ function playCard() {
           else {
             //we ahve to reshuffle an not throw away the existing deck
             fetch(`https://deckofcardsapi.com/api/deck/${deckId}/shuffle/?remaining=true`)
-              .then(res => res.)
+              .then(res => res.json())
+              .then(data => {
+                console.log(data)
+              })
             
           }
 

@@ -36,6 +36,11 @@ img{
   height: 150px;
   object-fit: cover;
   object-position: center;
+  border: 1px solid red;
+  padding: 5px 0;
+}
+.wartime {
+display: none;
 }
 .result {
   width: 200px;
