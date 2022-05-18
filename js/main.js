@@ -6,7 +6,8 @@
 //the winner takes all the cards.
 
 
-//preWar rendering
+
+//preWar rendering DOM API
 let play1 = document.querySelector('.play1');
 let play2 = document.querySelector('.play2');
 
@@ -15,12 +16,12 @@ let player2Suite = document.querySelector('.player2suite')
 let player1Value = document.querySelector('.value1')
 let player2Value = document.querySelector('.value2')
 
-//War rendering
+//War rendering DOM API
 let play1War = document.querySelector('.final1');
 let play2War = document.querySelector('.final2');
 
-let play1WarSuite = document.querySelector('.player1warsuite')
-let play2WarSuite = document.querySelector('.player2warsuite')
+let player1WarSuite = document.querySelector('.player1warsuite')
+let player2WarSuite = document.querySelector('.player2warsuite')
 let player1WarValue = document.querySelector('.value1war')
 let player2WarValue = document.querySelector('.value2war')
 
@@ -34,19 +35,7 @@ let restartButton = document.querySelector('.restart')
 let gameOutcome = document.querySelector('.result')
 
 
-//get values on pageLoad
-//if (play1 || play2 || player1Suite || player2Suite || player1Value || player2Value) {
-//  card = JSON.parse(localStorage.getItem('card'))
-//  play1 = card.image1;
-//  play2 = card.image2;
-//  player1Suite = card.suite1;
-//  player2Suite = card.suite2; 
-//  player1Value = card.value1;
-//  player2Value = card.value2;
-//}
 
-
-let deckId = '';
 //shuffle cards to start the game
 fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
   .then(res => res.json())
@@ -82,11 +71,11 @@ function playCard() {
       let player2 = convertToNum(data.cards[1].value);
       //war
 
-      player1Value = data.cards[0].value
-      player2Value = data.cards[1].value
+      player1Value.textContent = data.cards[0].value
+      player2Value.textContent = data.cards[1].value
 
-      player1Suite = data.cards[0].suite
-      player2Suite = data.cards[1].suite
+      player1Suite.textContent = data.cards[0].suit
+      player2Suite.textContent = data.cards[1].suit
 
 
       //check how many cards are remaining in the deck
@@ -118,15 +107,15 @@ function playCard() {
                 let player3 = convertToNum(data.cards[2].value);
                 let player4 = convertToNum(data.cards[3].value);
 
-                player1Suite = data.cards[0].suit
-                player2Suite = data.cards[1].suit
-                player1WarSuite = data.cards[2].suit
-                player2WarSuite = data.cards[3].suit
+                player1Suite.textContent = data.cards[0].suit
+                player2Suite.textContent = data.cards[1].suit
+                player1WarSuite.textContent = data.cards[2].suit
+                player2WarSuite.textContent = data.cards[3].suit
 
-                player1Value = data.cards[0].value
-                player2Value = data.cards[1].value
-                player1Warvalue = data.cards[2].value
-                player2Warvalue = data.cards[3].value
+                player1Value.textContent = data.cards[0].value
+                player2Value.textContent = data.cards[1].value
+                player1WarValue.textContent = data.cards[2].value
+                player2WarValue.textContent = data.cards[3].value
                 
                 warTime1.style.display = 'block'
                 warTime2.style.display = 'block'
@@ -164,15 +153,15 @@ function playCard() {
                 let player3 = convertToNum(data.cards[2].value);
                 let player4 = convertToNum(data.cards[3].value);
 
-                player1Suite = data.cards[0].suit
-                player2Suite = data.cards[1].suit
-                player1WarSuite = data.cards[2].suit
-                player2WarSuite = data.cards[3].suit
+                player1Suite.innerText = data.cards[0].suit
+                player2Suite.innerText = data.cards[1].suit
+                player1WarSuite.innerText = data.cards[2].suit
+                player2WarSuite.innerText = data.cards[3].suit
 
-                player1Value = data.cards[0].value
-                player2Value = data.cards[1].value
-                player1Warvalue = data.cards[2].value
-                player2Warvalue = data.cards[3].value
+                player1Value.textContent = data.cards[0].value
+                player2Value.textContent = data.cards[1].value
+                player1Warvalue.textContent = data.cards[2].value
+                player2Warvalue.textContent = data.cards[3].value
 
                 warTime1.style.display = 'block'
                 warTime2.style.display = 'block'
@@ -189,6 +178,46 @@ function playCard() {
           //disable play button to enable player restart game
           playButton.style.display = 'none'
         }
+      }
+      //if the deck is exhausted
+
+      //else if (data.remaining < 2) {}
+
+
+    })
+
+    .catch(err => console.log(`error is ${err}`))
+
+//Save current rount details in an object for local storage
+
+
+}
+
+
+//create a function to convert ACE, KING and QUEEN to numbers
+function convertToNum(val) {
+  if (val === 'JACK') {
+    return 11
+  }else if(val === 'QUEEN') {
+    return 12
+  }else if(val === 'KING') {
+    return 13
+  }else if(val === 'ACE') {
+    return 14
+  }else {return +val}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
           //if the number of cards left is greater than 4 remaing parameter should be true
           //else the remaining parameter should be false
@@ -212,19 +241,11 @@ function playCard() {
           //player1WarValue.textContent = player3
           //play2WarSuite.textContent = data.cards[4].suit
           //player2WarValue.textContent = player4
-      }
-      //if the deck is exhausted
-
-      //else if (data.remaining < 2) {}
 
 
-    })
 
-    .catch(err => console.log(`error is ${err}`))
 
-//Save current rount details in an object for local storage
-
-//let card = {
+          //let card = {
 //  image1 : play1.src,
 //  image2 : play2.src,
 //  suite1 : player1Suite.textContent,
@@ -233,18 +254,16 @@ function playCard() {
 //  value2 : player2Value.textContent
 //}
 //localStorage.setItem('card', JSON.stringify(card))
-}
 
 
-//create a function to convert ACE, KING and QUEEN to numbers
-function convertToNum(val) {
-  if (val === 'JACK') {
-    return 11
-  }else if(val === 'QUEEN') {
-    return 12
-  }else if(val === 'KING') {
-    return 13
-  }else if(val === 'ACE') {
-    return 14
-  }else {return +val}
-}
+
+//get values on pageLoad
+//if (play1 || play2 || player1Suite || player2Suite || player1Value || player2Value) {
+//  card = JSON.parse(localStorage.getItem('card'))
+//  play1 = card.image1;
+//  play2 = card.image2;
+//  player1Suite = card.suite1;
+//  player2Suite = card.suite2; 
+//  player1Value = card.value1;
+//  player2Value = card.value2;
+//}
