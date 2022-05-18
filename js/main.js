@@ -35,6 +35,9 @@ let restartButton = document.querySelector('.restart')
 let gameOutcome = document.querySelector('.result')
 
 
+restartButton.addEventListener('click', () => {
+  playButton.style.display = 'inline-block'
+})
 
 //shuffle cards to start the game
 fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
@@ -87,7 +90,7 @@ function playCard() {
         else if (player1 < player2) {
           gameOutcome.innerText = `Player 2 wins`
         }
-        //************===WAR is reached===**********
+//WAR is reached===**********
         else if (player1 === player2) {
           document.querySelector('.result').innerText = `WAR`
 
@@ -128,6 +131,7 @@ function playCard() {
                 }
               })
               .catch(err => console.log(err))
+              playButton.style.display = 'none'
           }
 
           //if cards left is less than 4 reshuffle deck and draw 4
@@ -174,23 +178,138 @@ function playCard() {
                 }
               })
               .catch(err => console.log(err))
+              playButton.style.display = 'none'
           }
           //disable play button to enable player restart game
           playButton.style.display = 'none'
         }
+
       }
-      //if the deck is exhausted
+      //if the deck is exhausted before war
+      else if (data.remaining < 2) {
+        fetch(`https://deckofcardsapi.com/api/deck/${deckId}/shuffle/`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          //draw 2 cards from the chain
+          return fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`)
+        })
+        .then(response => response.json())
+        .then(data => {
 
-      //else if (data.remaining < 2) {}
+          play1.src = data.cards[0].image
+          play2.src = data.cards[1].image
 
+          player1Suite.innerText = data.cards[0].suit
+          player2Suite.innerText = data.cards[1].suit
 
+          player1Value.textContent = data.cards[0].value
+          player2Value.textContent = data.cards[1].value
+
+          if(player1 > player2) {
+            gameOutcome.innerText = `Player 1 wins`
+          }
+          else if (player1 < player2) {
+            gameOutcome.innerText = `Player 2 wins`
+          }
+
+//WAR
+          else if (player1 == player2) {
+            document.querySelector('.result').innerText = `WAR`
+
+            //if cards left is greater than equal to 4 continue with deck and draw 4
+            if(data.remaining >= 4) {
+  
+              fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
+                .then(res => res.json())
+                .then(data => {
+                  console.log(data)
+                  play1.src = data.cards[0].image
+                  play2.src = data.cards[1].image
+                  play1War.src = data.cards[2].image
+                  play2War.src = data.cards[3].image
+  
+                  //war
+                  let player3 = convertToNum(data.cards[2].value);
+                  let player4 = convertToNum(data.cards[3].value);
+  
+                  player1Suite.textContent = data.cards[0].suit
+                  player2Suite.textContent = data.cards[1].suit
+                  player1WarSuite.textContent = data.cards[2].suit
+                  player2WarSuite.textContent = data.cards[3].suit
+  
+                  player1Value.textContent = data.cards[0].value
+                  player2Value.textContent = data.cards[1].value
+                  player1WarValue.textContent = data.cards[2].value
+                  player2WarValue.textContent = data.cards[3].value
+                  
+                  warTime1.style.display = 'block'
+                  warTime2.style.display = 'block'
+  
+                  if(player3 > player4) {
+                    gameOutcome.innerText = `Player 1 wins`
+                  }
+                  else if (player3 < player4) {
+                    gameOutcome.innerText = `Player 2 wins`
+                  }
+                })
+                .catch(err => console.log(err))
+                playButton.style.display = 'none'
+            }
+  
+            //if cards left is less than 4 reshuffle deck and draw 4
+            else if(data.remaining < 4) {
+              //we ahve to reshuffle an not throw away the existing deck
+              fetch(`https://deckofcardsapi.com/api/deck/${deckId}/shuffle/?remaining=true`)
+                .then(res => res.json())
+                .then(data => {
+                  console.log(data)
+                  //draw 4 cards from the chain
+                  return fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
+  
+                })
+                .then(response => response.json())
+                .then(data => {
+  
+                  play1.src = data.cards[0].image
+                  play2.src = data.cards[1].image
+                  play1War.src = data.cards[2].image
+                  play2War.src = data.cards[3].image
+  
+                  //war
+                  let player3 = convertToNum(data.cards[2].value);
+                  let player4 = convertToNum(data.cards[3].value);
+  
+                  player1Suite.innerText = data.cards[0].suit
+                  player2Suite.innerText = data.cards[1].suit
+                  player1WarSuite.innerText = data.cards[2].suit
+                  player2WarSuite.innerText = data.cards[3].suit
+  
+                  player1Value.textContent = data.cards[0].value
+                  player2Value.textContent = data.cards[1].value
+                  player1Warvalue.textContent = data.cards[2].value
+                  player2Warvalue.textContent = data.cards[3].value
+  
+                  warTime1.style.display = 'block'
+                  warTime2.style.display = 'block'
+    
+                  if(player3 > player4) {
+                    gameOutcome.innerText = `Player 1 wins`
+                  }
+                  else if (player3 < player4) {
+                    gameOutcome.innerText = `Player 2 wins`
+                  }
+                })
+                .catch(err => console.log(err))
+                playButton.style.display = 'none'
+            }
+            playButton.style.display = 'none'
+          }
+        })
+        .catch(err => console.log(err))
+      }
     })
-
     .catch(err => console.log(`error is ${err}`))
-
-//Save current rount details in an object for local storage
-
-
 }
 
 
